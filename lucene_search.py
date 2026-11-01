@@ -93,7 +93,15 @@ def main():
         for place, (score, doc) in enumerate(hits, 1):
             wiki = f"  [wiki: {doc.get('wiki_title')}]" if doc.get("wiki_title") else ""
             print(f"{place:>2}. {score:8.3f}  {doc.get('name')[:35]:<37}{doc.get('elevation') or '':>6} m"
-                  f"  {doc.get('country') or ''}{wiki}")
+                  f"  {doc.get('country') or ''}{wiki}  (id {doc.get('id')})")
+            # second line: the rest of the stored fields, empty ones are left out
+            location = " > ".join(doc.get(f) for f in ("continent", "region", "parent") if doc.get(f))
+            details = [location,
+                       f"also: {doc.get('other_name')}" if doc.get("other_name") else "",
+                       f"prominence {doc.get('prominence')} m" if doc.get("prominence") else "",
+                       f"first ascent {doc.get('ascent_year')}" if doc.get("ascent_year") else ""]
+            if any(details):
+                print(" " * 14 + " | ".join(d for d in details if d))
 
 
 if __name__ == "__main__":
